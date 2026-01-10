@@ -562,6 +562,20 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 2457393760949967816, guid: 28718a3af2c5c7944b32fe6eb2b414ee, type: 3}
+--- !u!114 &241232964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Controller/Trigger
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: b6d5c44ebe3244b7692e81ae8265eb22, type: 3}
+  m_ActionId: 3808b2c1-2f77-4a89-bc2a-34c0e0ef0ad3
 --- !u!1 &244493204 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 8f8d5033614483944ba4e56f472d6b09, type: 3}
@@ -1083,7 +1097,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8135023674665499069, guid: 58d0a4ac86f2348deb02f3880c71378e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8518324294302271954, guid: 58d0a4ac86f2348deb02f3880c71378e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1788,12 +1802,64 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1855028810}
     - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: audioSource
+      value: 
+      objectReference: {fileID: 1509075032}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
       propertyPath: grabInteractable
       value: 
       objectReference: {fileID: 1590781159}
     - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: triggerAction.m_Reference
+      value: 
+      objectReference: {fileID: 241232964}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: triggerAction.m_UseReference
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: triggerAction.m_Action.m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: triggerAction.m_Action.m_Flags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
       propertyPath: flashInputAction.m_Action.m_Name
       value: Flash Input
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: triggerAction.m_Action.m_Interactions
+      value: Press
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: triggerAction.m_Action.m_ExpectedControlType
+      value: Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: triggerAction.m_Action.m_SingletonActionBindings.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: triggerAction.m_Action.m_SingletonActionBindings.Array.data[0].m_Id
+      value: 3a3bcb8e-c436-4b79-ad09-4aaaa376c85f
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: triggerAction.m_Action.m_SingletonActionBindings.Array.data[0].m_Path
+      value: <XRController>{RightHand}/triggerButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: triggerAction.m_Action.m_SingletonActionBindings.Array.data[1].m_Path
+      value: <XRController>{RightHand}/triggerButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: triggerAction.m_Action.m_SingletonActionBindings.Array.data[0].m_Interactions
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: triggerAction.m_Action.m_SingletonActionBindings.Array.data[1].m_Interactions
+      value: Press
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1804,6 +1870,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3112867370740676602, guid: 93903fac38405d94381bff9993d61f64, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1855028808}
+    - targetCorrespondingSourceObject: {fileID: 3112867370740676602, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1509075031}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93903fac38405d94381bff9993d61f64, type: 3}
 --- !u!1001 &1327158934
@@ -2005,6 +2074,14 @@ PrefabInstance:
       propertyPath: m_TeleportModeCancel
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 4007501367374285879, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
+      propertyPath: m_ActionAssets.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4007501367374285879, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
+      propertyPath: 'm_ActionAssets.Array.data[1]'
+      value: 
+      objectReference: {fileID: -944628639613478452, guid: b6d5c44ebe3244b7692e81ae8265eb22, type: 3}
     - target: {fileID: 4295892835532738850, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_Height
       value: 1
@@ -2328,6 +2405,135 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 3745863258011225302, guid: 9fbf288a6dda8d94f84b60cf36b962cd, type: 3}
+--- !u!1 &1509075030
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1509075031}
+  - component: {fileID: 1509075032}
+  m_Layer: 0
+  m_Name: flashSound
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1509075031
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1509075030}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1590781158}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &1509075032
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1509075030}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: d432d9427d15bfb4dbf642d7089baa3f, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1522244984 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 31be93aae25f29a43b0f2ce5ae63b0bd, type: 3}
@@ -3398,9 +3604,9 @@ Light:
   m_GameObject: {fileID: 1855028807}
   m_Enabled: 1
   serializedVersion: 12
-  m_Type: 2
+  m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
+  m_Intensity: 2
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
