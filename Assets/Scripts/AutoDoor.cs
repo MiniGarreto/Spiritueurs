@@ -21,6 +21,13 @@ public class AutoDoor : MonoBehaviour
     public float angleJitter = 10f;
     public float speedJitter = 3f;
 
+    [Header("Squelette")]
+    public GameObject skeletonPrefab;
+    public Transform skeletonSpawnPoint;
+    public Transform playerTransform;  // XR Rig ou caméra du joueur
+
+    private GameObject currentSkeleton;
+
     private float targetAngle; 
     private float currentSpeed;
     private float currentAngle = 0f;
@@ -28,6 +35,7 @@ public class AutoDoor : MonoBehaviour
     private bool opening = false;
     private bool closing = false;
     private bool waitingToOpen = false;
+    private bool canReopen = true;
 
     void Start()
     {
@@ -37,23 +45,49 @@ public class AutoDoor : MonoBehaviour
 
     void Update()
     {
-        if (opening)
+        // Si un squelette est vivant, la porte ne peut pas s'ouvrir
+        if(currentSkeleton != null)
+        {
+            SkeletonAI skeletonAI = currentSkeleton.GetComponent<SkeletonAI>();
+            if(skeletonAI == null || !skeletonAI.gameObject.activeInHierarchy)
+            {
+                currentSkeleton = null; // squelette mort
+                canReopen = true;
+            }
+            else
+            {
+                canReopen = false;
+            }
+        }
+
+        // Ouverture
+        if(opening && canReopen)
         {
             currentAngle += currentSpeed * Time.deltaTime;
             currentAngle = Mathf.Clamp(currentAngle, 0f, targetAngle);
 
-            if (currentAngle >= targetAngle)
+            // Quand la porte est complètement ouverte
+            if(currentAngle >= targetAngle)
             {
                 opening = false;
+
+                // Spawn le squelette si rien n'est présent
+                if(currentSkeleton == null && skeletonPrefab != null)
+                {
+                    SpawnSkeleton();
+                    canReopen = false; // bloque la porte tant que squelette en vie
+                    StartCoroutine(CloseAfterSkeletonEnters());
+                }
             }
         }
-        else if (closing)
+        // Fermeture
+        else if(closing)
         {
             currentAngle -= currentSpeed * Time.deltaTime;
             currentAngle = Mathf.Clamp(currentAngle, 0f, targetAngle);
 
-            // Quand la porte est complètement fermée, on peut lancer le timer
-            if (currentAngle <= 0f && !waitingToOpen)
+            // Quand la porte est complètement fermée, on peut lancer le timer pour réouverture
+            if(currentAngle <= 0f && !waitingToOpen)
             {
                 waitingToOpen = true;
                 float delay = Random.Range(minDelay, maxDelay);
@@ -64,12 +98,22 @@ public class AutoDoor : MonoBehaviour
         pivotPorte.localRotation = Quaternion.Euler(0f, -currentAngle, 0f);
     }
 
-    // Appelée quand la porte est tapée par le papier toilette
+    void SpawnSkeleton()
+    {
+        if(currentSkeleton == null && skeletonPrefab != null && skeletonSpawnPoint != null)
+        {
+            currentSkeleton = Instantiate(skeletonPrefab, skeletonSpawnPoint.position, skeletonSpawnPoint.rotation);
+            SkeletonAI ai = currentSkeleton.GetComponent<SkeletonAI>();
+            if(ai != null) ai.player = playerTransform;
+        }
+    }
+
+    // Ferme la porte très vite (appelé quand tapée par papier toilette)
     public void CloseDoorFast()
     {
         opening = false;
         closing = true;
-        waitingToOpen = false;  // on ne relance pas le timer maintenant
+        waitingToOpen = false;
         currentSpeed = fastCloseSpeed;
     }
 
@@ -87,5 +131,14 @@ public class AutoDoor : MonoBehaviour
         closing = false;
         opening = true;
         waitingToOpen = false;
+    }
+
+    // Ferme la porte après que le squelette soit passé
+    private IEnumerator CloseAfterSkeletonEnters()
+    {
+        // On attend que le squelette avance un peu (tu peux ajuster le temps)
+        yield return new WaitForSeconds(1f);
+        closing = true;
+        currentSpeed = fastCloseSpeed;
     }
 }
