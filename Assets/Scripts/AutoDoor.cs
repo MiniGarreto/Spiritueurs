@@ -49,10 +49,19 @@ public class AutoDoor : MonoBehaviour
         if(currentSkeleton != null)
         {
             SkeletonAI skeletonAI = currentSkeleton.GetComponent<SkeletonAI>();
-            if(skeletonAI == null || !skeletonAI.gameObject.activeInHierarchy)
+            // Vérifier si le squelette est mort (IsAlive = false) ou détruit
+            if(skeletonAI == null || !skeletonAI.IsAlive)
             {
                 currentSkeleton = null; // squelette mort
                 canReopen = true;
+                
+                // Relancer le cycle d'ouverture de la porte après la mort du squelette
+                if(!waitingToOpen && !opening)
+                {
+                    waitingToOpen = true;
+                    float delay = Random.Range(minDelay, maxDelay);
+                    StartCoroutine(WaitAndOpen(delay));
+                }
             }
             else
             {

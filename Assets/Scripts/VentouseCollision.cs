@@ -6,7 +6,7 @@ public class VentouseCollision : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         // Si on touche un squelette
-        if(collision.gameObject.CompareTag("Skeleton"))
+        if(collision.gameObject.CompareTag("skeleton"))
         {
             SkeletonAI skeleton = collision.gameObject.GetComponent<SkeletonAI>();
             if(skeleton != null)

@@ -9,6 +9,8 @@ public class SkeletonAI : MonoBehaviour
 
     private NavMeshAgent agent;
     private bool alive = true;
+    
+    public bool IsAlive => alive;
 
     void Awake()
     {
