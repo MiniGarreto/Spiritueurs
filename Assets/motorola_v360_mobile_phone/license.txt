@@ -1,0 +1,11 @@
+Model Information:
+* title:	Motorola V360 Mobile Phone
+* source:	https://sketchfab.com/3d-models/motorola-v360-mobile-phone-0bc85df6571d4687af29c348ebd152cc
+* author:	Juliko Banditto (https://sketchfab.com/juliko_banditto)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Motorola V360 Mobile Phone" (https://sketchfab.com/3d-models/motorola-v360-mobile-phone-0bc85df6571d4687af29c348ebd152cc) by Juliko Banditto (https://sketchfab.com/juliko_banditto) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

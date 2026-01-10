@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8787850955172118337}
   m_Layer: 0
   m_Name: PQ
-  m_TagString: Untagged
+  m_TagString: PapierToilette
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
