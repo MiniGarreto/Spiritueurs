@@ -562,20 +562,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 2457393760949967816, guid: 28718a3af2c5c7944b32fe6eb2b414ee, type: 3}
---- !u!114 &241232964
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Controller/Trigger
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: b6d5c44ebe3244b7692e81ae8265eb22, type: 3}
-  m_ActionId: 3808b2c1-2f77-4a89-bc2a-34c0e0ef0ad3
 --- !u!1 &244493204 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 8f8d5033614483944ba4e56f472d6b09, type: 3}
@@ -1294,6 +1280,20 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3a606fa11eef51740b85ac1238bb374e, type: 3}
   m_PrefabInstance: {fileID: 435425734}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &894020183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Controller/Trigger
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: b6d5c44ebe3244b7692e81ae8265eb22, type: 3}
+  m_ActionId: 3808b2c1-2f77-4a89-bc2a-34c0e0ef0ad3
 --- !u!1001 &916305837
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1620,6 +1620,20 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &1171012872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: XRI Left Interaction/Activate
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 5d389f1a753b8e24686a6e3f316b4f9d, type: 3}
+  m_ActionId: 0c0991c5-d329-4afc-8892-1076b440477c
 --- !u!1001 &1260215014
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1812,15 +1826,23 @@ PrefabInstance:
     - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
       propertyPath: triggerAction.m_Reference
       value: 
-      objectReference: {fileID: 241232964}
+      objectReference: {fileID: 894020183}
     - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
       propertyPath: triggerAction.m_UseReference
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: leftTriggerAction.m_Reference
+      value: 
+      objectReference: {fileID: 1171012872}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
       propertyPath: triggerAction.m_Action.m_Type
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: rightTriggerAction.m_Reference
+      value: 
+      objectReference: {fileID: 1463209280}
     - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
       propertyPath: triggerAction.m_Action.m_Flags
       value: 0
@@ -1828,6 +1850,22 @@ PrefabInstance:
     - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
       propertyPath: flashInputAction.m_Action.m_Name
       value: Flash Input
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: leftTriggerAction.m_UseReference
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: leftTriggerAction.m_Action.m_Name
+      value: Left Trigger
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: rightTriggerAction.m_UseReference
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: rightTriggerAction.m_Action.m_Name
+      value: Right Trigger
       objectReference: {fileID: 0}
     - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
       propertyPath: triggerAction.m_Action.m_Interactions
@@ -1839,19 +1877,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
       propertyPath: triggerAction.m_Action.m_SingletonActionBindings.Array.size
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: leftTriggerAction.m_Action.m_SingletonActionBindings.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
       propertyPath: triggerAction.m_Action.m_SingletonActionBindings.Array.data[0].m_Id
-      value: 3a3bcb8e-c436-4b79-ad09-4aaaa376c85f
+      value: 833ff404-5b2f-4417-90df-f506e9fdaf6e
       objectReference: {fileID: 0}
     - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
       propertyPath: triggerAction.m_Action.m_SingletonActionBindings.Array.data[0].m_Path
-      value: <XRController>{RightHand}/triggerButton
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
       propertyPath: triggerAction.m_Action.m_SingletonActionBindings.Array.data[1].m_Path
       value: <XRController>{RightHand}/triggerButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: leftTriggerAction.m_Action.m_SingletonActionBindings.Array.data[0].m_Id
+      value: 917691b4-5d55-4a67-9294-3e5fca811ab2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: leftTriggerAction.m_Action.m_SingletonActionBindings.Array.data[0].m_Path
+      value: <XRController>{LeftHand}/triggerButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: leftTriggerAction.m_Action.m_SingletonActionBindings.Array.data[0].m_Action
+      value: Left Trigger
       objectReference: {fileID: 0}
     - target: {fileID: 7944701608631788409, guid: 93903fac38405d94381bff9993d61f64, type: 3}
       propertyPath: triggerAction.m_Action.m_SingletonActionBindings.Array.data[0].m_Interactions
@@ -2076,8 +2130,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4007501367374285879, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_ActionAssets.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4007501367374285879, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
+      propertyPath: 'm_ActionAssets.Array.data[0]'
+      value: 
+      objectReference: {fileID: -944628639613478452, guid: 5d389f1a753b8e24686a6e3f316b4f9d, type: 3}
     - target: {fileID: 4007501367374285879, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: 'm_ActionAssets.Array.data[1]'
       value: 
@@ -2373,6 +2431,20 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 09d0605c648abee46838ee9ece54dc99, type: 3}
+--- !u!114 &1463209280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: XRI Right Interaction/Activate
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 5d389f1a753b8e24686a6e3f316b4f9d, type: 3}
+  m_ActionId: 41976d89-60de-4deb-bff9-16b4af96b290
 --- !u!1 &1497486045 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 9fbf288a6dda8d94f84b60cf36b962cd, type: 3}
