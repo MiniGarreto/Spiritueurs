@@ -5,6 +5,10 @@ public class SharkAI : MonoBehaviour
     [Header("Références")]
     public Transform player;
 
+    [Header("Waypoints")]
+    public Transform[] waypoints;           // Points de passage avant d'aller vers le joueur
+    public float waypointReachDistance = 0.5f;  // Distance pour considérer un waypoint atteint
+
     [Header("Mouvement")]
     public float swimSpeed = 3f;
     public float rotationSpeed = 2f;
@@ -13,29 +17,62 @@ public class SharkAI : MonoBehaviour
     public float attackDistance = 1.5f;  // Distance pour toucher le joueur
 
     private bool isActive = false;
+    private int currentWaypointIndex = 0;
+    private bool waypointsCompleted = false;
 
     void Update()
     {
         if (!isActive || player == null) return;
 
-        // Calculer la direction vers le joueur
-        Vector3 direction = (player.position - transform.position).normalized;
+        Transform target;
+
+        // Déterminer la cible : waypoint ou joueur
+        if (!waypointsCompleted && waypoints != null && waypoints.Length > 0 && currentWaypointIndex < waypoints.Length)
+        {
+            target = waypoints[currentWaypointIndex];
+
+            // Vérifier si on a atteint le waypoint actuel
+            float distanceToWaypoint = Vector3.Distance(transform.position, target.position);
+            if (distanceToWaypoint <= waypointReachDistance)
+            {
+                currentWaypointIndex++;
+
+                // Si tous les waypoints sont passés, aller vers le joueur
+                if (currentWaypointIndex >= waypoints.Length)
+                {
+                    waypointsCompleted = true;
+                }
+                return;
+            }
+        }
+        else
+        {
+            // Tous les waypoints sont passés, cibler le joueur
+            target = player;
+            waypointsCompleted = true;
+        }
+
+        // Calculer la direction vers la cible
+        Vector3 direction = (target.position - transform.position).normalized;
         
-        // Rotation progressive vers le joueur
+        // Rotation progressive vers la cible
         if (direction != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
-        // Avancer vers le joueur
+        // Avancer vers la cible
         transform.position += transform.forward * swimSpeed * Time.deltaTime;
 
-        // Vérifier si le requin a atteint le joueur
-        float distance = Vector3.Distance(transform.position, player.position);
-        if (distance <= attackDistance)
+        // Vérifier si le requin a atteint le joueur (seulement après les waypoints)
+        if (waypointsCompleted)
         {
-            AttackPlayer();
+            float distance = Vector3.Distance(transform.position, player.position);
+            if (distance <= attackDistance)
+            {
+                AttackPlayer();
+            }
         }
     }
 
@@ -44,6 +81,8 @@ public class SharkAI : MonoBehaviour
     {
         player = playerTarget;
         isActive = true;
+        currentWaypointIndex = 0;
+        waypointsCompleted = (waypoints == null || waypoints.Length == 0);
     }
 
     private void AttackPlayer()

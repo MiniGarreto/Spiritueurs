@@ -10,11 +10,16 @@ public class SkeletonSpawnManager : MonoBehaviour
     public float minDelayBetweenSpawns = 2f;
     public float maxDelayBetweenSpawns = 5f;
 
+    [Header("Désactivation par niveau d'eau")]
+    public Transform waterTransform;          // L'eau qui monte
+    public float disableAtWaterYScale = 1f;   // Désactiver le spawn quand l'eau dépasse ce scale Y
+
     private List<AutoDoor> spawnPoints = new List<AutoDoor>();
     private AutoDoor currentActiveSpawnPoint;
     private AutoDoor lastUsedSpawnPoint;
     private GameObject currentSkeleton;
     private bool isWaitingToChooseSpawn = false;
+    private bool spawnDisabledByWater = false;
 
     void Awake()
     {
@@ -32,6 +37,31 @@ public class SkeletonSpawnManager : MonoBehaviour
     {
         // Démarre le premier cycle de spawn après un délai
         StartCoroutine(ChooseAndActivateSpawnPoint());
+    }
+
+    void Update()
+    {
+        // Vérifier si l'eau a dépassé le seuil
+        if (waterTransform != null && !spawnDisabledByWater)
+        {
+            if (waterTransform.localScale.y >= disableAtWaterYScale)
+            {
+                spawnDisabledByWater = true;
+                
+                // Fermer la porte active s'il y en a une
+                if (currentActiveSpawnPoint != null && currentSkeleton == null)
+                {
+                    currentActiveSpawnPoint.CloseDoorFast();
+                    currentActiveSpawnPoint = null;
+                }
+            }
+        }
+    }
+
+    // Vérifie si le spawn est désactivé par l'eau
+    public bool IsSpawnDisabled()
+    {
+        return spawnDisabledByWater;
     }
 
     // Appelé par chaque AutoDoor pour s'enregistrer
@@ -73,8 +103,8 @@ public class SkeletonSpawnManager : MonoBehaviour
         currentSkeleton = null;
         currentActiveSpawnPoint = null;
         
-        // Choisir un nouveau point de spawn
-        if (!isWaitingToChooseSpawn)
+        // Choisir un nouveau point de spawn seulement si le spawn n'est pas désactivé
+        if (!isWaitingToChooseSpawn && !spawnDisabledByWater)
         {
             StartCoroutine(ChooseAndActivateSpawnPoint());
         }
@@ -88,8 +118,8 @@ public class SkeletonSpawnManager : MonoBehaviour
         {
             currentActiveSpawnPoint = null;
             
-            // Choisir un nouveau point de spawn différent
-            if (!isWaitingToChooseSpawn)
+            // Choisir un nouveau point de spawn différent seulement si le spawn n'est pas désactivé
+            if (!isWaitingToChooseSpawn && !spawnDisabledByWater)
             {
                 StartCoroutine(ChooseAndActivateSpawnPoint());
             }
@@ -103,6 +133,13 @@ public class SkeletonSpawnManager : MonoBehaviour
         // Attendre un délai aléatoire
         float delay = Random.Range(minDelayBetweenSpawns, maxDelayBetweenSpawns);
         yield return new WaitForSeconds(delay);
+
+        // Ne pas spawner si désactivé par l'eau
+        if (spawnDisabledByWater)
+        {
+            isWaitingToChooseSpawn = false;
+            yield break;
+        }
 
         // Choisir un point de spawn différent du dernier utilisé
         AutoDoor chosenSpawnPoint = ChooseRandomSpawnPoint();

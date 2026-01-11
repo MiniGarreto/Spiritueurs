@@ -12,6 +12,9 @@ public class SharkSpawner : MonoBehaviour
     public Transform sharkSpawnPoint;
     public Transform playerTransform;
 
+    [Header("Waypoints")]
+    public Transform[] waypoints;  // Points de passage avant d'aller vers le joueur
+
     [Header("Configuration")]
     public float spawnDelay = 1f;  // Délai avant de spawn le requin après que l'eau soit pleine
 
@@ -55,10 +58,11 @@ public class SharkSpawner : MonoBehaviour
         // Créer le requin
         GameObject shark = Instantiate(sharkPrefab, sharkSpawnPoint.position, sharkSpawnPoint.rotation);
 
-        // Activer l'IA du requin
+        // Activer l'IA du requin et lui passer les waypoints
         SharkAI sharkAI = shark.GetComponent<SharkAI>();
         if (sharkAI != null)
         {
+            sharkAI.waypoints = waypoints;  // Passer les waypoints de la scène
             sharkAI.Activate(playerTransform);
         }
 
