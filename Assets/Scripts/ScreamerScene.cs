@@ -74,10 +74,10 @@ public class ScreamerScene : MonoBehaviour
         // Attendre la fin du screamer
         yield return new WaitForSeconds(screamerDuration);
 
-        // Retourner au jeu
+        // Retourner au menu
         if (GameOverManager.Instance != null)
         {
-            GameOverManager.Instance.ReturnToGame();
+            GameOverManager.Instance.ReturnToMenu();
         }
     }
 }

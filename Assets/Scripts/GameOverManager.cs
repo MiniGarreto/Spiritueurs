@@ -6,6 +6,7 @@ public class GameOverManager : MonoBehaviour
     public static GameOverManager Instance { get; private set; }
 
     [Header("Scènes")]
+    public string menuSceneName = "Menu";           // Nom de la scène du menu principal
     public string gameSceneName = "Game";           // Nom de la scène de jeu principale
     public string gameOverSceneName = "GameOver";   // Nom de la scène screamer
 
@@ -28,8 +29,14 @@ public class GameOverManager : MonoBehaviour
         SceneManager.LoadScene(gameOverSceneName);
     }
 
-    // Appelé après le screamer pour retourner au jeu
-    public void ReturnToGame()
+    // Appelé après le screamer pour retourner au menu
+    public void ReturnToMenu()
+    {
+        SceneManager.LoadScene(menuSceneName);
+    }
+
+    // Pour relancer directement le jeu (si besoin)
+    public void RestartGame()
     {
         SceneManager.LoadScene(gameSceneName);
     }
