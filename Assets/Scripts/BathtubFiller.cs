@@ -7,12 +7,20 @@ public class BathtubFiller : MonoBehaviour
     [Header("Niveau d'eau")]
     [SerializeField] private Transform waterLevel;
     [SerializeField] private float fillSpeed = 0.1f;
+    [SerializeField] private float minHeight = 1f;
     [SerializeField] private float maxHeight = 1f;
+    [SerializeField] private bool enableWaterScaling = true;
     [SerializeField] private float minScale = 0.5f; // Scale au fond de la baignoire
     [SerializeField] private float maxScale = 1f;   // Scale en haut de la baignoire
 
-    private float currentHeight = 0f;
+    private float currentHeight;
     
+
+    void Start()
+    {
+        currentHeight = minHeight;
+    }
+
 
     void Update()
     {
@@ -22,7 +30,7 @@ public class BathtubFiller : MonoBehaviour
             if (currentHeight < maxHeight)
             {
                 currentHeight += fillSpeed * Time.deltaTime;
-                currentHeight = Mathf.Clamp(currentHeight, 0f, maxHeight);
+                currentHeight = Mathf.Clamp(currentHeight, minHeight, maxHeight);
 
                 // Mettre à jour la position et la scale du niveau d'eau
                 if (waterLevel != null)
@@ -32,37 +40,44 @@ public class BathtubFiller : MonoBehaviour
                     newPos.y = currentHeight;
                     waterLevel.localPosition = newPos;
 
-                    // Scale adaptée à la hauteur (interpolation linéaire)
-                    float normalizedHeight = currentHeight / maxHeight;
-                    float currentScale = Mathf.Lerp(minScale, maxScale, normalizedHeight);
-                    Vector3 newScale = waterLevel.localScale;
-                    newScale.y = currentScale;
-                    newScale.z = currentScale;
-                    waterLevel.localScale = newScale;
+                    // Scale adaptée à la hauteur (interpolation linéaire) si activé
+                    if (enableWaterScaling)
+                    {
+                        float normalizedHeight = (currentHeight - minHeight) / (maxHeight - minHeight);
+                        float currentScale = Mathf.Lerp(minScale, maxScale, normalizedHeight);
+                        Vector3 newScale = waterLevel.localScale;
+                        newScale.y = currentScale;
+                        newScale.z = currentScale;
+                        waterLevel.localScale = newScale;
+                    }
                 }
             }
         }
     }
 
-    public float GetFillPercentage()
+    public bool heightMaxAtteinte()
     {
-        return (currentHeight / maxHeight) * 100f;
+        return currentHeight == maxHeight;
     }
 
     public void EmptyBathtub()
     {
-        currentHeight = 0f;
+        currentHeight = minHeight;
+        
         if (waterLevel != null)
         {
             Vector3 newPos = waterLevel.localPosition;
-            newPos.y = 0.15f;
+            newPos.y = minHeight;
             waterLevel.localPosition = newPos;
 
-            // Remettre la scale au minimum
-            Vector3 newScale = waterLevel.localScale;
-            newScale.y = minScale;
-            newScale.z = minScale;
-            waterLevel.localScale = newScale;
+            // Remettre la scale au minimum si le scaling est activé
+            if (enableWaterScaling)
+            {
+                Vector3 newScale = waterLevel.localScale;
+                newScale.y = minScale;
+                newScale.z = minScale;
+                waterLevel.localScale = newScale;
+            }
         }
     }
 }
