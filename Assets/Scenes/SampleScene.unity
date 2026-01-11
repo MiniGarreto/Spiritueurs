@@ -6582,10 +6582,10 @@ MonoBehaviour:
   bathtubFillers:
   - {fileID: 210783628}
   - {fileID: 1275038945}
-  timeBetweenTapActivation: 30
+  timeBetweenTapActivation: 20
   sharkSpawner: {fileID: 1077097285}
   smilerSpawner: {fileID: 1679028647}
-  initialSmilerDelay: 30
+  initialSmilerDelay: 15
   p1_minSpawnDelay: 8
   p1_maxSpawnDelay: 15
   p1_doorOpenSpeed: 7
@@ -6602,10 +6602,18 @@ MonoBehaviour:
   p2_fillSpeed: 0.05
   p3_fillSpeed: 0.08
   p4_fillSpeed: 0.12
-  p1_smilerInterval: 20
-  p2_smilerInterval: 12
-  p3_smilerInterval: 8
-  p4_smilerInterval: 5
+  p1_smilerInterval: 15
+  p2_smilerInterval: 10
+  p3_smilerInterval: 6
+  p4_smilerInterval: 3
+  p1_tapMinWait: 25
+  p1_tapMaxWait: 30
+  p2_tapMinWait: 15
+  p2_tapMaxWait: 25
+  p3_tapMinWait: 10
+  p3_tapMaxWait: 20
+  p4_tapMinWait: 5
+  p4_tapMaxWait: 10
 --- !u!4 &752034228
 Transform:
   m_ObjectHideFlags: 0

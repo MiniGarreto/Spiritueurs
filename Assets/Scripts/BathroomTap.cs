@@ -5,8 +5,8 @@ public class BathroomTap : MonoBehaviour
 {
     [SerializeField] private ParticleSystem waterStream;
     [SerializeField] private AudioSource tapSound;
-    [SerializeField] private float minWaitTime = 15f;
-    [SerializeField] private float maxWaitTime = 30f;
+    public float minWaitTime = 15f;
+    public float maxWaitTime = 30f;
 
     [Header("Contrôle par DifficultyManager")]
     public bool waitForActivation = false;  // Si true, attend l'activation du DifficultyManager

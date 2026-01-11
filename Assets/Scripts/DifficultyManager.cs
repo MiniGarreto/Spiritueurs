@@ -66,6 +66,22 @@ public class DifficultyManager : MonoBehaviour
     public float p3_smilerInterval = 8f;
     public float p4_smilerInterval = 5f;
 
+    [Header("Paramètres Robinets par phase (temps avant réouverture)")]
+    public float p1_tapMinWait = 25f;
+    public float p1_tapMaxWait = 40f;
+    public float p2_tapMinWait = 15f;
+    public float p2_tapMaxWait = 30f;
+    public float p3_tapMinWait = 10f;
+    public float p3_tapMaxWait = 20f;
+    public float p4_tapMinWait = 5f;
+    public float p4_tapMaxWait = 12f;
+
+    [Header("Nombre de squelettes simultanés par phase")]
+    public int p1_maxSkeletons = 1;
+    public int p2_maxSkeletons = 1;
+    public int p3_maxSkeletons = 2;
+    public int p4_maxSkeletons = 3;
+
     private int currentPhase = 0;
 
     void Awake()
@@ -147,6 +163,8 @@ public class DifficultyManager : MonoBehaviour
     private void ApplyPhase(int phase)
     {
         float minDelay, maxDelay, doorSpeed, fillSpeed, smilerInterval;
+        float tapMinWait, tapMaxWait;
+        int maxSkeletons;
 
         switch (phase)
         {
@@ -156,6 +174,9 @@ public class DifficultyManager : MonoBehaviour
                 doorSpeed = p1_doorOpenSpeed;
                 fillSpeed = p1_fillSpeed;
                 smilerInterval = p1_smilerInterval;
+                tapMinWait = p1_tapMinWait;
+                tapMaxWait = p1_tapMaxWait;
+                maxSkeletons = p1_maxSkeletons;
                 break;
             case 2:
                 minDelay = p2_minSpawnDelay;
@@ -163,6 +184,9 @@ public class DifficultyManager : MonoBehaviour
                 doorSpeed = p2_doorOpenSpeed;
                 fillSpeed = p2_fillSpeed;
                 smilerInterval = p2_smilerInterval;
+                tapMinWait = p2_tapMinWait;
+                tapMaxWait = p2_tapMaxWait;
+                maxSkeletons = p2_maxSkeletons;
                 break;
             case 3:
                 minDelay = p3_minSpawnDelay;
@@ -170,6 +194,9 @@ public class DifficultyManager : MonoBehaviour
                 doorSpeed = p3_doorOpenSpeed;
                 fillSpeed = p3_fillSpeed;
                 smilerInterval = p3_smilerInterval;
+                tapMinWait = p3_tapMinWait;
+                tapMaxWait = p3_tapMaxWait;
+                maxSkeletons = p3_maxSkeletons;
                 break;
             default: // Phase 4+
                 minDelay = p4_minSpawnDelay;
@@ -177,6 +204,9 @@ public class DifficultyManager : MonoBehaviour
                 doorSpeed = p4_doorOpenSpeed;
                 fillSpeed = p4_fillSpeed;
                 smilerInterval = p4_smilerInterval;
+                tapMinWait = p4_tapMinWait;
+                tapMaxWait = p4_tapMaxWait;
+                maxSkeletons = p4_maxSkeletons;
                 break;
         }
 
@@ -185,6 +215,7 @@ public class DifficultyManager : MonoBehaviour
         {
             skeletonSpawnManager.minDelayBetweenSpawns = minDelay;
             skeletonSpawnManager.maxDelayBetweenSpawns = maxDelay;
+            skeletonSpawnManager.maxSimultaneousSkeletons = maxSkeletons;
         }
 
         // Appliquer la vitesse d'ouverture des portes
@@ -195,6 +226,9 @@ public class DifficultyManager : MonoBehaviour
 
         // Appliquer l'intervalle des smilers
         ApplySmilerInterval(smilerInterval);
+
+        // Appliquer le temps d'attente des robinets
+        ApplyTapWaitTime(tapMinWait, tapMaxWait);
     }
 
     private void ApplyDoorSpeed(float speed)
@@ -225,6 +259,20 @@ public class DifficultyManager : MonoBehaviour
         if (smilerSpawner != null)
         {
             smilerSpawner.spawnInterval = interval;
+        }
+    }
+
+    private void ApplyTapWaitTime(float minWait, float maxWait)
+    {
+        if (bathroomTaps == null) return;
+
+        foreach (var tap in bathroomTaps)
+        {
+            if (tap != null)
+            {
+                tap.minWaitTime = minWait;
+                tap.maxWaitTime = maxWait;
+            }
         }
     }
 
