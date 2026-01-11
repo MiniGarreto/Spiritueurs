@@ -132,11 +132,15 @@ MonoBehaviour:
   pivotPorte: {fileID: 1491946056933622962}
   baseOpenAngle: 90
   baseOpenSpeed: 10
+  axeRotation: 0
+  inverserSens: 0
+  forcerEspaceMonde: 0
   fastCloseSpeed: 60
-  minDelay: 2
-  maxDelay: 5
   angleJitter: 10
   speedJitter: 3
+  openingSound: {fileID: 8300000, guid: ee8a513ecb03a5740982ce2d6960f217, type: 3}
+  soundVolume: 5
+  loopSound: 1
   skeletonPrefab: {fileID: 1271545357261882265, guid: 43cd9f0479ec34e498e96610a35060a1, type: 3}
   skeletonSpawnPoint: {fileID: 2125570722415197899}
   playerTransform: {fileID: 0}
@@ -155,11 +159,15 @@ MonoBehaviour:
   pivotPorte: {fileID: 1491946056933622962}
   baseOpenAngle: 90
   baseOpenSpeed: 10
+  axeRotation: 0
+  inverserSens: 0
+  forcerEspaceMonde: 0
   fastCloseSpeed: 60
-  minDelay: 2
-  maxDelay: 5
   angleJitter: 10
   speedJitter: 3
+  openingSound: {fileID: 0}
+  soundVolume: 1
+  loopSound: 1
   skeletonPrefab: {fileID: 1271545357261882265, guid: 43cd9f0479ec34e498e96610a35060a1, type: 3}
   skeletonSpawnPoint: {fileID: 2125570722415197899}
   playerTransform: {fileID: 0}
