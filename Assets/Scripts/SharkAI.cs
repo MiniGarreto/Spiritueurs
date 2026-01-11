@@ -89,10 +89,10 @@ public class SharkAI : MonoBehaviour
     {
         isActive = false;
 
-        // Déclencher le Game Over
+        // Déclencher le Game Over Requin
         if (GameOverManager.Instance != null)
         {
-            GameOverManager.Instance.TriggerGameOver();
+            GameOverManager.Instance.TriggerSharkGameOver();
         }
 
         // Optionnel : détruire le requin

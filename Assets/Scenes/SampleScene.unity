@@ -5675,7 +5675,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameOverManager
   menuSceneName: Menu
   gameSceneName: SampleScene
-  gameOverSceneName: GameOverScene
+  skeletonGameOverSceneName: GameOverSquelette
+  sharkGameOverSceneName: GameOverRequin
 --- !u!4 &265040656
 Transform:
   m_ObjectHideFlags: 0

@@ -65,10 +65,10 @@ public class SkeletonAI : MonoBehaviour
         float distance = Vector3.Distance(transform.position, player.position);
         if (distance <= attackDistance * 1.2f)
         {
-            // Le joueur est touché - Game Over!
+            // Le joueur est touché - Game Over Squelette!
             if (GameOverManager.Instance != null)
             {
-                GameOverManager.Instance.TriggerGameOver();
+                GameOverManager.Instance.TriggerSkeletonGameOver();
             }
         }
 
