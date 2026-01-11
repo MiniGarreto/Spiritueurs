@@ -10,8 +10,9 @@ public class ScaleOnMaxHeight : MonoBehaviour
 
     [Header("Paramètres de scaling")]
     [SerializeField] private float yScaleSpeed = 0.5f; // vitesse d'augmentation du scale en Y
+    [SerializeField] private float yDrainSpeed = 0.3f; // vitesse de diminution du scale en Y quand pas de remplissage
     [SerializeField] private float maxYScale = 2f;     // scale Y maximum à atteindre
-    [SerializeField] private bool triggerOnce = true;  // si vrai, arrête le script une fois le max atteint
+    [SerializeField] private float minYScale = 0f;     // scale Y minimum (0 = pas d'eau)
 
     private bool started = false;
     private float initialYScale;
@@ -51,17 +52,22 @@ public class ScaleOnMaxHeight : MonoBehaviour
         if (started)
         {
             Vector3 scale = targetObject.localScale;
-            // La vitesse est multipliée par le nombre de bathtubs à 100%
-            float currentSpeed = yScaleSpeed * countAtMax;
-            scale.y += currentSpeed * Time.deltaTime;
-            scale.y = Mathf.Min(scale.y, maxYScale);
-            targetObject.localScale = scale;
 
-            if (triggerOnce && Mathf.Approximately(scale.y, maxYScale))
+            if (countAtMax > 0)
             {
-                // Désactive le script une fois le max atteint si demandé
-                enabled = false;
+                // L'eau monte - la vitesse est multipliée par le nombre de bathtubs à 100%
+                float currentSpeed = yScaleSpeed * countAtMax;
+                scale.y += currentSpeed * Time.deltaTime;
+                scale.y = Mathf.Min(scale.y, maxYScale);
             }
+            else
+            {
+                // Aucun robinet ne coule - l'eau descend
+                scale.y -= yDrainSpeed * Time.deltaTime;
+                scale.y = Mathf.Max(scale.y, minYScale);
+            }
+
+            targetObject.localScale = scale;
         }
     }
 }

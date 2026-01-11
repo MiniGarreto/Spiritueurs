@@ -7,6 +7,7 @@ public class BathtubFiller : MonoBehaviour
     [Header("Niveau d'eau")]
     [SerializeField] private Transform waterLevel;
     [SerializeField] private float fillSpeed = 0.1f;
+    [SerializeField] private float drainSpeed = 0.05f;  // Vitesse de vidange quand robinet fermé
     [SerializeField] private float minHeight = 1f;
     [SerializeField] private float maxHeight = 1f;
     [SerializeField] private bool enableWaterScaling = true;
@@ -30,34 +31,61 @@ public class BathtubFiller : MonoBehaviour
             if (currentHeight < maxHeight)
             {
                 currentHeight += fillSpeed * Time.deltaTime;
-                currentHeight = Mathf.Clamp(currentHeight, minHeight, maxHeight);
+            }
+        }
+        else
+        {
+            // Vider la baignoire si le robinet est fermé
+            if (currentHeight > minHeight)
+            {
+                currentHeight -= drainSpeed * Time.deltaTime;
+            }
+        }
 
-                // Mettre à jour la position et la scale du niveau d'eau
-                if (waterLevel != null)
-                {
-                    // Position Y
-                    Vector3 newPos = waterLevel.localPosition;
-                    newPos.y = currentHeight;
-                    waterLevel.localPosition = newPos;
+        currentHeight = Mathf.Clamp(currentHeight, minHeight, maxHeight);
 
-                    // Scale adaptée à la hauteur (interpolation linéaire) si activé
-                    if (enableWaterScaling)
-                    {
-                        float normalizedHeight = (currentHeight - minHeight) / (maxHeight - minHeight);
-                        float currentScale = Mathf.Lerp(minScale, maxScale, normalizedHeight);
-                        Vector3 newScale = waterLevel.localScale;
-                        newScale.y = currentScale;
-                        newScale.z = currentScale;
-                        waterLevel.localScale = newScale;
-                    }
-                }
+        // Mettre à jour la position et la scale du niveau d'eau
+        if (waterLevel != null)
+        {
+            // Position Y
+            Vector3 newPos = waterLevel.localPosition;
+            newPos.y = currentHeight;
+            waterLevel.localPosition = newPos;
+
+            // Scale adaptée à la hauteur (interpolation linéaire) si activé
+            if (enableWaterScaling)
+            {
+                float normalizedHeight = (currentHeight - minHeight) / (maxHeight - minHeight);
+                float currentScale = Mathf.Lerp(minScale, maxScale, normalizedHeight);
+                Vector3 newScale = waterLevel.localScale;
+                newScale.y = currentScale;
+                newScale.z = currentScale;
+                waterLevel.localScale = newScale;
             }
         }
     }
 
     public bool heightMaxAtteinte()
     {
-        return currentHeight == maxHeight;
+        return currentHeight >= maxHeight;
+    }
+
+    // Permet de modifier la vitesse de remplissage depuis l'extérieur
+    public void SetFillSpeed(float newSpeed)
+    {
+        fillSpeed = newSpeed;
+    }
+
+    // Permet de modifier la vitesse de vidange depuis l'extérieur
+    public void SetDrainSpeed(float newSpeed)
+    {
+        drainSpeed = newSpeed;
+    }
+
+    // Permet de lire la vitesse actuelle
+    public float GetFillSpeed()
+    {
+        return fillSpeed;
     }
 
     public void EmptyBathtub()

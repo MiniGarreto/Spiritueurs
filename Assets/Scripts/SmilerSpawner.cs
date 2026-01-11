@@ -9,7 +9,8 @@ public class SmilerSpawner : MonoBehaviour
     [Header("Spawn Settings")]
     public GameObject smilerPrefab;
     public float spawnInterval = 5f;
-    public bool startOnAwake = true;
+    [Tooltip("If false, spawning must be started via StartSpawning() or by DifficultyManager")]
+    public bool startOnAwake = false;  // Changé à false pour laisser le DifficultyManager contrôler
     [Tooltip("If true, the spawner will use the GameObject's children as spawn points.")]
     public bool useChildrenAsSpawnPoints = true;
     [Tooltip("Optional explicit spawn points (used when useChildrenAsSpawnPoints is false)")]

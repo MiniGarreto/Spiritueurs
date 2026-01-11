@@ -41,10 +41,13 @@ public class SkeletonSpawnManager : MonoBehaviour
 
     void Update()
     {
-        // Vérifier si l'eau a dépassé le seuil
-        if (waterTransform != null && !spawnDisabledByWater)
+        // Vérifier le niveau d'eau
+        if (waterTransform != null)
         {
-            if (waterTransform.localScale.y >= disableAtWaterYScale)
+            bool waterTooHigh = waterTransform.localScale.y >= disableAtWaterYScale;
+
+            // L'eau vient de dépasser le seuil
+            if (waterTooHigh && !spawnDisabledByWater)
             {
                 spawnDisabledByWater = true;
                 
@@ -53,6 +56,17 @@ public class SkeletonSpawnManager : MonoBehaviour
                 {
                     currentActiveSpawnPoint.CloseDoorFast();
                     currentActiveSpawnPoint = null;
+                }
+            }
+            // L'eau vient de redescendre sous le seuil
+            else if (!waterTooHigh && spawnDisabledByWater)
+            {
+                spawnDisabledByWater = false;
+                
+                // Relancer le cycle de spawn
+                if (!isWaitingToChooseSpawn && currentSkeleton == null)
+                {
+                    StartCoroutine(ChooseAndActivateSpawnPoint());
                 }
             }
         }

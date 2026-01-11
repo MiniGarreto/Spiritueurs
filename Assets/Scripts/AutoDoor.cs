@@ -28,7 +28,7 @@ public class AutoDoor : MonoBehaviour
 
     [Header("Son d'ouverture")]
     public AudioClip openingSound;      // Son joué pendant l'ouverture (différent pour chaque entrée)
-    [Range(0f, 5f)]
+    [Range(0f, 10f)]
     public float soundVolume = 1f;
     public bool loopSound = true;       // Le son boucle pendant toute l'ouverture
 

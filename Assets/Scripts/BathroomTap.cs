@@ -5,11 +5,15 @@ public class BathroomTap : MonoBehaviour
 {
     [SerializeField] private ParticleSystem waterStream;
     [SerializeField] private AudioSource tapSound;
-    [SerializeField] private float minWaitTime = 5f;
-    [SerializeField] private float maxWaitTime = 15f;
+    [SerializeField] private float minWaitTime = 15f;
+    [SerializeField] private float maxWaitTime = 30f;
+
+    [Header("Contrôle par DifficultyManager")]
+    public bool waitForActivation = false;  // Si true, attend l'activation du DifficultyManager
     
 
     private bool isTapOpen = false;
+    private bool isActivated = false;
     private Coroutine tapRoutine;
 
     void Start()
@@ -23,7 +27,22 @@ public class BathroomTap : MonoBehaviour
             gameObject.AddComponent<SphereCollider>();
         }
 
+        // Si pas de contrôle par difficulté, démarrer directement
+        if (!waitForActivation)
+        {
+            isActivated = true;
+            tapRoutine = StartCoroutine(TapRoutine());
+        }
+    }
+
+    // Appelé par le DifficultyManager pour activer ce robinet
+    public void ActivateByDifficulty()
+    {
+        if (isActivated) return;
+        
+        isActivated = true;
         tapRoutine = StartCoroutine(TapRoutine());
+        Debug.Log($"[BathroomTap] Robinet {gameObject.name} activé!");
     }
 
     private IEnumerator TapRoutine()
