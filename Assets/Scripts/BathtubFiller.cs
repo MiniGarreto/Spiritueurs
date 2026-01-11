@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class BathtubFiller : MonoBehaviour
 {
+    [Header("Système écoulement d'eau")]
     [SerializeField] private BathroomTap tap;
+    [Header("Niveau d'eau")]
     [SerializeField] private Transform waterLevel;
     [SerializeField] private float fillSpeed = 0.1f;
     [SerializeField] private float maxHeight = 1f;
@@ -10,6 +12,7 @@ public class BathtubFiller : MonoBehaviour
     [SerializeField] private float maxScale = 1f;   // Scale en haut de la baignoire
 
     private float currentHeight = 0f;
+    
 
     void Update()
     {
@@ -57,7 +60,7 @@ public class BathtubFiller : MonoBehaviour
 
             // Remettre la scale au minimum
             Vector3 newScale = waterLevel.localScale;
-            newScale.x = minScale;
+            newScale.y = minScale;
             newScale.z = minScale;
             waterLevel.localScale = newScale;
         }
