@@ -9,6 +9,7 @@ public class AutoDoor : MonoBehaviour
     [Header("Ouverture")]
     public float baseOpenAngle = 90f;   // angle de base
     public float baseOpenSpeed = 10f;   // vitesse ouverture normale
+    public bool inverserSens = false;   // true pour fenêtre (sens inverse)
 
     [Header("Fermeture")]
     public float fastCloseSpeed = 60f;  // vitesse fermeture rapide
@@ -104,7 +105,8 @@ public class AutoDoor : MonoBehaviour
             }
         }
 
-        pivotPorte.localRotation = Quaternion.Euler(0f, -currentAngle, 0f);
+        float direction = inverserSens ? 1f : -1f;
+        pivotPorte.localRotation = Quaternion.Euler(0f, direction * currentAngle, 0f);
     }
 
     void SpawnSkeleton()
