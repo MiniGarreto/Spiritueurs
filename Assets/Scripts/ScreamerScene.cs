@@ -20,9 +20,6 @@ public class ScreamerScene : MonoBehaviour
         // Désactiver les mouvements du joueur VR
         DisablePlayerMovement();
 
-        // Positionner le joueur devant le monstre
-        PositionPlayer();
-
         // Lancer le screamer
         StartCoroutine(PlayScreamer());
     }

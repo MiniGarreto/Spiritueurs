@@ -16,6 +16,7 @@ public class GameOverManager : MonoBehaviour
     public string gameSceneName = "Game";                     // Nom de la scène de jeu principale
     public string skeletonGameOverSceneName = "GameOverSkeleton";  // Scène screamer squelette
     public string sharkGameOverSceneName = "GameOverShark";        // Scène screamer requin
+    public string smilerGameOverSceneName = "GameOverSmiler";      // Scène screamer smiler
 
     void Awake()
     {
@@ -28,6 +29,11 @@ public class GameOverManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void TriggerSmilerGameOver()
+    {
+        SceneManager.LoadScene(smilerGameOverSceneName);
     }
 
     // Appelé quand le joueur est touché par le squelette

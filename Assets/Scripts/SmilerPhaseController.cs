@@ -170,8 +170,7 @@ public class SmilerPhaseController : MonoBehaviour, IFlashable
         }
         else
         {
-            // reached the position
-            approachTarget = null;
+            GameOverManager.Instance.TriggerSmilerGameOver();
         }
     }
 
