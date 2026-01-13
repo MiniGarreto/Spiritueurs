@@ -3,13 +3,8 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class ToiletPaperSpawner : MonoBehaviour
 {
-    [Header("Prefab du rouleau")]
     public GameObject toiletPaperPrefab;
-
-    [Header("Point de spawn")]
     public Transform spawnPoint;
-
-    [Header("Cooldown (anti spam)")]
     public float spawnCooldown = 0.3f;
 
     private float lastSpawnTime = 0f;

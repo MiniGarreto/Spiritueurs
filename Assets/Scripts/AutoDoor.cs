@@ -3,37 +3,26 @@ using System.Collections;
 
 public enum AxeRotation
 {
-    Y,  // Porte/Fenêtre (gauche-droite)
-    X   // Vent/Trappe (haut-bas)
+    Y,
+    X
 }
 
 public class AutoDoor : MonoBehaviour
 {
-    [Header("Référence")]
     public Transform pivotPorte;
-
-    [Header("Ouverture")]
-    public float baseOpenAngle = 90f;   // angle de base
-    public float baseOpenSpeed = 10f;   // vitesse ouverture normale
-    public AxeRotation axeRotation = AxeRotation.Y;  // Y = porte, X = vent
-    public bool inverserSens = false;   // inverse le sens d'ouverture
-    public bool forcerEspaceMonde = false;  // cocher si étirement à cause de scale parent
-
-    [Header("Fermeture")]
-    public float fastCloseSpeed = 60f;  // vitesse fermeture rapide
-
-    [Header("Jitter")]
+    public float baseOpenAngle = 90f;   
+    public float baseOpenSpeed = 10f;  
+    public AxeRotation axeRotation = AxeRotation.Y;
+    public bool inverserSens = false;  
+    public bool forcerEspaceMonde = false;  
+    public float fastCloseSpeed = 60f;
     public float angleJitter = 10f;
     public float speedJitter = 3f;
-
-    [Header("Sons d'entrée")]
-    public AudioClip openingSound;      // Son joué pendant l'ouverture
-    public AudioClip closingSound;      // Son joué à la fermeture
-
-    [Header("Squelette")]
+    public AudioClip openingSound;     
+    public AudioClip closingSound;      
     public GameObject skeletonPrefab;
     public Transform skeletonSpawnPoint;
-    public Transform playerTransform;  // XR Rig ou caméra du joueur
+    public Transform playerTransform;
 
     private GameObject currentSkeleton;
 
@@ -50,13 +39,10 @@ public class AutoDoor : MonoBehaviour
 
     void Start()
     {
-        // S'enregistrer auprès du manager
-        if (SkeletonSpawnManager.Instance != null)
-        {
+        if (SkeletonSpawnManager.Instance != null){
             SkeletonSpawnManager.Instance.RegisterSpawnPoint(this);
         }
 
-        // Utiliser espace monde si forcé OU si un parent a une scale non-uniforme
         utiliserEspaceMonde = forcerEspaceMonde;
         
         if(!utiliserEspaceMonde)
@@ -74,13 +60,11 @@ public class AutoDoor : MonoBehaviour
             }
         }
         
-        // Sauvegarder la rotation initiale du pivot
         rotationInitiale = utiliserEspaceMonde ? pivotPorte.rotation : pivotPorte.localRotation;
     }
 
     void OnDestroy()
     {
-        // Se désenregistrer du manager
         if (SkeletonSpawnManager.Instance != null)
         {
             SkeletonSpawnManager.Instance.UnregisterSpawnPoint(this);
@@ -89,7 +73,6 @@ public class AutoDoor : MonoBehaviour
 
     void Update()
     {
-        // Vérifier si le squelette spawné par cette porte est mort
         if(currentSkeleton != null)
         {
             SkeletonAI skeletonAI = currentSkeleton.GetComponent<SkeletonAI>();
@@ -99,7 +82,6 @@ public class AutoDoor : MonoBehaviour
                 currentSkeleton = null;
                 hasSpawnedSkeleton = false;
                 
-                // Notifier le manager que le squelette est mort (passer la référence pour le retirer de la liste)
                 if (SkeletonSpawnManager.Instance != null)
                 {
                     SkeletonSpawnManager.Instance.OnSkeletonDied(deadSkeleton);
@@ -107,18 +89,15 @@ public class AutoDoor : MonoBehaviour
             }
         }
 
-        // Ouverture
         if(opening)
         {
             currentAngle += currentSpeed * Time.deltaTime;
             currentAngle = Mathf.Clamp(currentAngle, 0f, targetAngle);
 
-            // Quand la porte est complètement ouverte
             if(currentAngle >= targetAngle)
             {
                 opening = false;
 
-                // Spawn le squelette si c'est le point actif et qu'on peut encore spawner
                 if(!hasSpawnedSkeleton && skeletonPrefab != null && 
                    SkeletonSpawnManager.Instance != null && 
                    SkeletonSpawnManager.Instance.IsActiveSpawnPoint(this) &&
@@ -129,7 +108,7 @@ public class AutoDoor : MonoBehaviour
                 }
             }
         }
-        // Fermeture
+
         else if(closing)
         {
             currentAngle -= currentSpeed * Time.deltaTime;
@@ -144,7 +123,6 @@ public class AutoDoor : MonoBehaviour
         float direction = inverserSens ? 1f : -1f;
         float angle = direction * currentAngle;
         
-        // Appliquer la rotation
         Vector3 axe = (axeRotation == AxeRotation.X) ? Vector3.right : Vector3.up;
         
         if(utiliserEspaceMonde)
@@ -167,7 +145,6 @@ public class AutoDoor : MonoBehaviour
             
             hasSpawnedSkeleton = true;
             
-            // Notifier le manager (passer aussi la référence de cette porte)
             if (SkeletonSpawnManager.Instance != null)
             {
                 SkeletonSpawnManager.Instance.OnSkeletonSpawned(currentSkeleton, this);
@@ -175,13 +152,10 @@ public class AutoDoor : MonoBehaviour
         }
     }
 
-    // Appelé par le manager pour démarrer l'ouverture
     public void StartOpening()
     {
-        // Nouveau targetAngle avec jitter
         targetAngle = baseOpenAngle + Random.Range(-angleJitter, angleJitter);
 
-        // Nouvelle vitesse avec jitter
         currentSpeed = baseOpenSpeed + Random.Range(-speedJitter, speedJitter);
         currentSpeed = Mathf.Max(1f, currentSpeed);
 
@@ -189,11 +163,9 @@ public class AutoDoor : MonoBehaviour
         opening = true;
         hasSpawnedSkeleton = false;
 
-        // Jouer le son d'ouverture
         PlayOpeningSound();
     }
 
-    // Ferme la porte très vite (appelé quand tapée par papier toilette)
     public void CloseDoorFast()
     {
         bool wasOpening = opening;
@@ -202,11 +174,8 @@ public class AutoDoor : MonoBehaviour
         closing = true;
         currentSpeed = fastCloseSpeed;
 
-        // Jouer le son de fermeture via le manager
         PlayClosingSound();
         
-        // Si la porte était en train de s'ouvrir et qu'aucun squelette n'a été spawné,
-        // notifier le manager pour choisir un nouveau point de spawn
         if (wasOpening && !hasSpawnedSkeleton && SkeletonSpawnManager.Instance != null)
         {
             SkeletonSpawnManager.Instance.OnDoorClosedByPlayer(this);
@@ -229,7 +198,6 @@ public class AutoDoor : MonoBehaviour
         }
     }
 
-    // Ferme la porte après que le squelette soit passé
     private IEnumerator CloseAfterSkeletonEnters()
     {
         yield return new WaitForSeconds(1f);
@@ -237,7 +205,6 @@ public class AutoDoor : MonoBehaviour
         opening = false;
         currentSpeed = fastCloseSpeed;
         
-        // Jouer le son de fermeture
         PlayClosingSound();
     }
 }

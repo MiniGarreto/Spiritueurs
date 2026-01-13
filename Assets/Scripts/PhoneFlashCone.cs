@@ -3,25 +3,18 @@ using UnityEngine;
 
 public class PhoneFlashCone : MonoBehaviour
 {
-    [Header("Visuals")]
     public Light flashLight;
-    [Tooltip("If true, the assigned Light will be disabled at start (in editor and at runtime)")]
     public bool startLightDisabled = true;
 
-    [Header("Cone settings")]
     public float flashDuration = 0.1f;
     public float range = 10f;
     [Range(0f, 180f)]
     public float coneAngle = 60f;
 
-    [Header("Detection")]
     public LayerMask enemyMask;
 
-    [Header("Timing")]
     public float cooldown = 1f;
 
-    [Header("Audio")]
-    [Tooltip("Optional sound played when the flash is triggered")] 
     public AudioClip flashSfx;
     [Range(0f, 1f)]
     public float sfxVolume = 1f;
@@ -48,7 +41,6 @@ public class PhoneFlashCone : MonoBehaviour
             Vector3 dirN = dir.normalized;
             if (Vector3.Angle(transform.forward, dirN) <= coneAngle * 0.5f)
             {
-                // Verify line of sight (no obstacle between origin and target)
                 if (Physics.Raycast(transform.position, dirN, out var hit, range))
                 {
                     if (hit.transform == col.transform || hit.transform.IsChildOf(col.transform))

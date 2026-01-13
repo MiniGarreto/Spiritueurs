@@ -7,32 +7,31 @@ public class DifficultyManager : MonoBehaviour
     public static DifficultyManager Instance { get; private set; }
 
     [Header("Affichage du temps")]
-    public TextMeshProUGUI survivalTimeText;  // UI Text pour afficher le temps
-    public Transform survivalTimeUI;           // Canvas/UI à positionner dans le monde
+    public TextMeshProUGUI survivalTimeText; 
+    public Transform survivalTimeUI;         
 
     [Header("Temps de survie")]
     public float survivalTime { get; private set; } = 0f;
 
     [Header("Phases de difficulté (en secondes)")]
-    public float phase1Duration = 60f;   // Phase facile (0-60s)
-    public float phase2Duration = 120f;  // Phase moyenne (60-180s)
-    public float phase3Duration = 180f;  // Phase difficile (180-360s)
-    // Après phase3 = Phase extrême
+    public float phase1Duration = 60f;   //  facil
+    public float phase2Duration = 120f;  //  moyenne
+    public float phase3Duration = 120f;  // difficil
 
     [Header("Références - Squelettes")]
     public SkeletonSpawnManager skeletonSpawnManager;
 
     [Header("Références - Eau")]
-    public BathroomTap[] bathroomTaps;             // Les robinets à activer progressivement
-    public BathtubFiller[] bathtubFillers;         // Les fillers pour ajuster la vitesse
-    public float timeBetweenTapActivation = 30f;   // Délai entre activation des robinets
+    public BathroomTap[] bathroomTaps;           
+    public BathtubFiller[] bathtubFillers;        
+    public float timeBetweenTapActivation = 15f;   
 
     [Header("Références - Requin")]
     public SharkSpawner sharkSpawner;
 
     [Header("Références - Smilers")]
     public SmilerSpawner smilerSpawner;
-    public float initialSmilerDelay = 30f;  // Délai avant que les smilers commencent à spawn
+    public float initialSmilerDelay = 25f; 
 
     [Header("Paramètres Squelettes - Phase 1 (Facile)")]
     public float p1_minSpawnDelay = 12f;
@@ -50,8 +49,8 @@ public class DifficultyManager : MonoBehaviour
     public float p3_doorOpenSpeed = 10f;
 
     [Header("Paramètres Squelettes - Phase 4 (Extrême)")]
-    public float p4_minSpawnDelay = 3f;
-    public float p4_maxSpawnDelay = 6f;
+    public float p4_minSpawnDelay = 2f;
+    public float p4_maxSpawnDelay = 5f;
     public float p4_doorOpenSpeed = 14f;
 
     [Header("Paramètres Eau par phase")]
@@ -61,20 +60,20 @@ public class DifficultyManager : MonoBehaviour
     public float p4_fillSpeed = 0.12f;
 
     [Header("Paramètres Smilers par phase (intervalle de spawn)")]
-    public float p1_smilerInterval = 20f; 
-    public float p2_smilerInterval = 12f;
-    public float p3_smilerInterval = 8f;
-    public float p4_smilerInterval = 5f;
+    public float p1_smilerInterval = 15f; 
+    public float p2_smilerInterval = 10f;
+    public float p3_smilerInterval = 6f;
+    public float p4_smilerInterval = 2f;
 
     [Header("Paramètres Robinets par phase (temps avant réouverture)")]
     public float p1_tapMinWait = 25f;
-    public float p1_tapMaxWait = 40f;
+    public float p1_tapMaxWait = 35f;
     public float p2_tapMinWait = 15f;
-    public float p2_tapMaxWait = 30f;
+    public float p2_tapMaxWait = 25;
     public float p3_tapMinWait = 10f;
-    public float p3_tapMaxWait = 20f;
+    public float p3_tapMaxWait = 15;
     public float p4_tapMinWait = 5f;
-    public float p4_tapMaxWait = 12f;
+    public float p4_tapMaxWait = 8;
 
     [Header("Nombre de squelettes simultanés par phase")]
     public int p1_maxSkeletons = 1;
@@ -98,31 +97,21 @@ public class DifficultyManager : MonoBehaviour
 
     void Start()
     {
-        // Désactiver les smilers au début, ils seront activés après un délai
         if (smilerSpawner != null)
         {
             smilerSpawner.StopSpawning();
         }
 
-        // Appliquer la phase 1 (facile)
         ApplyPhase(1);
 
-        // Programmer l'activation progressive des robinets
         StartCoroutine(ActivateTapsProgressively());
-
-        // Programmer l'activation des smilers après un délai
         StartCoroutine(ActivateSmilersAfterDelay());
     }
 
     void Update()
     {
-        // Incrémenter le temps de survie
         survivalTime += Time.deltaTime;
-
-        // Mettre à jour l'affichage
         UpdateSurvivalTimeDisplay();
-
-        // Vérifier les changements de phase
         CheckPhaseTransition();
     }
 
@@ -198,7 +187,7 @@ public class DifficultyManager : MonoBehaviour
                 tapMaxWait = p3_tapMaxWait;
                 maxSkeletons = p3_maxSkeletons;
                 break;
-            default: // Phase 4+
+            default: 
                 minDelay = p4_minSpawnDelay;
                 maxDelay = p4_maxSpawnDelay;
                 doorSpeed = p4_doorOpenSpeed;
@@ -210,7 +199,6 @@ public class DifficultyManager : MonoBehaviour
                 break;
         }
 
-        // Appliquer aux squelettes
         if (skeletonSpawnManager != null)
         {
             skeletonSpawnManager.minDelayBetweenSpawns = minDelay;
@@ -218,22 +206,14 @@ public class DifficultyManager : MonoBehaviour
             skeletonSpawnManager.maxSimultaneousSkeletons = maxSkeletons;
         }
 
-        // Appliquer la vitesse d'ouverture des portes
         ApplyDoorSpeed(doorSpeed);
-
-        // Appliquer la vitesse de l'eau
         ApplyFillSpeed(fillSpeed);
-
-        // Appliquer l'intervalle des smilers
         ApplySmilerInterval(smilerInterval);
-
-        // Appliquer le temps d'attente des robinets
         ApplyTapWaitTime(tapMinWait, tapMaxWait);
     }
 
     private void ApplyDoorSpeed(float speed)
     {
-        // Trouver tous les AutoDoor dans la scène
         AutoDoor[] doors = FindObjectsOfType<AutoDoor>();
         foreach (var door in doors)
         {
@@ -291,10 +271,7 @@ public class DifficultyManager : MonoBehaviour
     {
         if (bathroomTaps == null || bathroomTaps.Length == 0) yield break;
 
-        // Attendre un délai initial avant le premier robinet
         yield return new WaitForSeconds(15f);
-
-        // Activer les robinets un par un avec un délai entre chaque
         for (int i = 0; i < bathroomTaps.Length; i++)
         {
             if (bathroomTaps[i] != null)
@@ -303,7 +280,6 @@ public class DifficultyManager : MonoBehaviour
                 Debug.Log($"[Difficulté] Robinet {i + 1}/{bathroomTaps.Length} activé à {GetFormattedTime()}");
             }
 
-            // Attendre avant d'activer le suivant (sauf pour le dernier)
             if (i < bathroomTaps.Length - 1)
             {
                 yield return new WaitForSeconds(timeBetweenTapActivation);
@@ -311,7 +287,6 @@ public class DifficultyManager : MonoBehaviour
         }
     }
 
-    // Méthode pour obtenir le temps formaté (pour d'autres scripts)
     public string GetFormattedTime()
     {
         int minutes = Mathf.FloorToInt(survivalTime / 60f);
@@ -319,7 +294,6 @@ public class DifficultyManager : MonoBehaviour
         return string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 
-    // Méthode pour reset (nouvelle partie)
     public void ResetDifficulty()
     {
         survivalTime = 0f;

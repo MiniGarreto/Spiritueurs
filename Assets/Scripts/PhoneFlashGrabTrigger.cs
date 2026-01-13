@@ -5,7 +5,6 @@ using UnityEngine.XR.Interaction.Toolkit;
 [RequireComponent(typeof(UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable))]
 public class PhoneFlashGrabTrigger : MonoBehaviour
 {
-    [Tooltip("Référence vers le composant qui gère le flash en cône (auto-assigné si présent en enfant)")]
     public PhoneFlashCone phoneFlash;
 
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
@@ -44,7 +43,6 @@ public class PhoneFlashGrabTrigger : MonoBehaviour
     private void OnSelectEntered(SelectEnterEventArgs args)
     {
         currentInteractor = args.interactorObject;
-        // Find the nearest controller InputDevice to the interactor transform
         FindAndAssignNearestController(currentInteractor.transform);
         lastTriggerPressed = false;
     }
@@ -60,7 +58,6 @@ public class PhoneFlashGrabTrigger : MonoBehaviour
     {
         if (currentInteractor == null || phoneFlash == null) return;
 
-        // If the assigned device is invalid, try to find one again
         if (!targetDevice.isValid)
             FindAndAssignNearestController(currentInteractor.transform);
 
@@ -71,15 +68,12 @@ public class PhoneFlashGrabTrigger : MonoBehaviour
         }
         else
         {
-            // si on n'a pas de controller, on ne peut pas lire la gâchette
             return;
         }
 
-        // détection du front montant
         if (pressed && !lastTriggerPressed)
         {
             phoneFlash.TriggerFlash();
-            // optionnel: haptique rapide si disponible
             if (targetDevice.isValid && targetDevice.TryGetHapticCapabilities(out var caps) && caps.supportsImpulse)
             {
                 targetDevice.SendHapticImpulse(0, 0.3f, 0.05f);
@@ -115,7 +109,6 @@ public class PhoneFlashGrabTrigger : MonoBehaviour
             }
             else
             {
-                // si pas de position, fallback sur premier
                 if (!best.isValid) best = d;
             }
         }

@@ -6,7 +6,6 @@ public class MusicPlayer : MonoBehaviour
 {
     public static MusicPlayer Instance { get; private set; }
 
-    [Header("Audio")]
     public AudioClip musicClip;
     [Range(0f, 1f)] public float volume = 1f;
     public bool loop = true;

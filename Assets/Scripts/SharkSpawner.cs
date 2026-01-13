@@ -2,21 +2,14 @@ using UnityEngine;
 
 public class SharkSpawner : MonoBehaviour
 {
-    [Header("Références")]
-    public ScaleOnMaxHeight waterRiseSystem;  // Le système qui scale l'eau de la pièce
-    public Transform targetWater;              // L'eau qui monte (pour vérifier si elle est au max)
-    public float maxWaterYScale = 2f;          // Le scale Y quand l'eau est au maximum
-
-    [Header("Spawn du requin")]
+    public ScaleOnMaxHeight waterRiseSystem;
+    public Transform targetWater;
+    public float maxWaterYScale = 2f;      
     public GameObject sharkPrefab;
     public Transform sharkSpawnPoint;
     public Transform playerTransform;
-
-    [Header("Waypoints")]
-    public Transform[] waypoints;  // Points de passage avant d'aller vers le joueur
-
-    [Header("Configuration")]
-    public float spawnDelay = 1f;  // Délai avant de spawn le requin après que l'eau soit pleine
+    public Transform[] waypoints; 
+    public float spawnDelay = 1f;
 
     private bool sharkSpawned = false;
     private bool waterIsFull = false;
@@ -26,7 +19,6 @@ public class SharkSpawner : MonoBehaviour
     {
         if (sharkSpawned) return;
 
-        // Vérifier si l'eau a atteint son niveau maximum
         if (targetWater != null)
         {
             if (targetWater.localScale.y >= maxWaterYScale - 0.01f)
@@ -35,7 +27,6 @@ public class SharkSpawner : MonoBehaviour
             }
         }
 
-        // Si l'eau est pleine, attendre le délai puis spawner le requin
         if (waterIsFull)
         {
             fullWaterTimer += Time.deltaTime;
@@ -55,21 +46,18 @@ public class SharkSpawner : MonoBehaviour
             return;
         }
 
-        // Créer le requin
         GameObject shark = Instantiate(sharkPrefab, sharkSpawnPoint.position, sharkSpawnPoint.rotation);
 
-        // Activer l'IA du requin et lui passer les waypoints
         SharkAI sharkAI = shark.GetComponent<SharkAI>();
         if (sharkAI != null)
         {
-            sharkAI.waypoints = waypoints;  // Passer les waypoints de la scène
+            sharkAI.waypoints = waypoints;
             sharkAI.Activate(playerTransform);
         }
 
         sharkSpawned = true;
     }
 
-    // Méthode pour reset si besoin (nouvelle partie)
     public void ResetSpawner()
     {
         sharkSpawned = false;

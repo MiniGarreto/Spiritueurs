@@ -4,36 +4,29 @@ using System.Collections;
 
 public class ScreamerScene : MonoBehaviour
 {
-    [Header("Références")]
-    public Animator monsterAnimator;        // Animator du monstre screamer
-    public Transform monsterTransform;      // Position du monstre
-    public Transform playerCameraPosition;  // Position où placer la caméra du joueur
-    public AudioSource screamerAudio;       // Son du screamer
 
-    [Header("Configuration")]
-    public string screamerAnimationTrigger = "Screamer";  // Nom du trigger d'animation
-    public float screamerDuration = 3f;     // Durée avant de retourner au jeu
-    public float delayBeforeAnimation = 0.5f; // Petit délai avant le screamer
+    public Animator monsterAnimator;       
+    public Transform monsterTransform;   
+    public Transform playerCameraPosition;  
+    public AudioSource screamerAudio;     
+    public string screamerAnimationTrigger = "Screamer"; 
+    public float screamerDuration = 3f;
+    public float delayBeforeAnimation = 0.5f;
 
     private void Start()
     {
-        // Désactiver les mouvements du joueur VR
         DisablePlayerMovement();
-
-        // Lancer le screamer
         StartCoroutine(PlayScreamer());
     }
 
     private void DisablePlayerMovement()
     {
-        // Désactiver tous les locomotion providers
         var locomotionProviders = FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.Locomotion.LocomotionProvider>();
         foreach (var provider in locomotionProviders)
         {
             provider.enabled = false;
         }
 
-        // Désactiver les contrôleurs XR
         var xrControllers = FindObjectsOfType<XRBaseController>();
         foreach (var controller in xrControllers)
         {
@@ -43,7 +36,6 @@ public class ScreamerScene : MonoBehaviour
 
     private void PositionPlayer()
     {
-        // Trouver le XR Origin/Rig
         var xrOrigin = FindObjectOfType<Unity.XR.CoreUtils.XROrigin>();
         if (xrOrigin != null && playerCameraPosition != null)
         {
@@ -56,22 +48,17 @@ public class ScreamerScene : MonoBehaviour
     {
         yield return new WaitForSeconds(delayBeforeAnimation);
 
-        // Jouer l'animation du monstre
         if (monsterAnimator != null)
         {
             monsterAnimator.SetTrigger(screamerAnimationTrigger);
         }
-
-        // Jouer le son
         if (screamerAudio != null)
         {
             screamerAudio.Play();
         }
 
-        // Attendre la fin du screamer
         yield return new WaitForSeconds(screamerDuration);
 
-        // Retourner au menu
         if (GameOverManager.Instance != null)
         {
             GameOverManager.Instance.ReturnToMenu();

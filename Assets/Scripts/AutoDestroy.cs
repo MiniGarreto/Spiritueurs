@@ -3,7 +3,6 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class AutoDespawnWhenNotHeld : MonoBehaviour
 {
-    [Header("Temps avant disparition quand non tenu")]
     public float despawnDelay = 3f;
 
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
@@ -21,13 +20,13 @@ public class AutoDespawnWhenNotHeld : MonoBehaviour
     void OnGrab(SelectEnterEventArgs args)
     {
         isHeld = true;
-        timer = 0f; // reset timer
+        timer = 0f;
     }
 
     void OnRelease(SelectExitEventArgs args)
     {
         isHeld = false;
-        timer = 0f; // restart timer
+        timer = 0f;
     }
 
     void Update()

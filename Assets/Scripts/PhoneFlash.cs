@@ -32,7 +32,6 @@ public class PhoneFlash : MonoBehaviour
 
     void Update()
     {
-        // Si l'objet n'est pas attrapé → tout éteindre
         if (!grabInteractable.isSelected)
         {
             StopEffects();
@@ -40,11 +39,8 @@ public class PhoneFlash : MonoBehaviour
         }
 
         bool isPressed = triggerAction.action.IsPressed();
-
-        // Lumière active tant que la gâchette est pressée
         flashLight.enabled = isPressed;
 
-        // Son synchronisé avec la gâchette
         if (isPressed)
         {
             if (!audioSource.isPlaying)

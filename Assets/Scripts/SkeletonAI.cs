@@ -6,11 +6,8 @@ public class SkeletonAI : MonoBehaviour
     public Animator animator;
     public Transform player;
     public float attackDistance = 2f;
-
-    [Header("Attaque")]
-    public float attackDamageDelay = 0.5f;  // Délai avant que l'attaque touche
-    public float attackCooldown = 1.5f;     // Temps entre les attaques
-
+    public float attackDamageDelay = 0.5f;
+    public float attackCooldown = 1.5f;
     private NavMeshAgent agent;
     private bool alive = true;
     private bool isAttacking = false;
@@ -43,7 +40,6 @@ public class SkeletonAI : MonoBehaviour
             animator.SetBool("IsWalking", false);
             animator.SetBool("IsAttacking", true);
 
-            // Lancer l'attaque si pas en cooldown
             if (!isAttacking && Time.time - lastAttackTime >= attackCooldown)
             {
                 StartCoroutine(PerformAttack());
@@ -56,16 +52,13 @@ public class SkeletonAI : MonoBehaviour
         isAttacking = true;
         lastAttackTime = Time.time;
 
-        // Attendre le moment de l'impact de l'animation
         yield return new WaitForSeconds(attackDamageDelay);
 
         if (!alive) yield break;
 
-        // Vérifier si le joueur est toujours à portée
         float distance = Vector3.Distance(transform.position, player.position);
         if (distance <= attackDistance * 1.2f)
         {
-            // Le joueur est touché - Game Over Squelette!
             if (GameOverManager.Instance != null)
             {
                 GameOverManager.Instance.TriggerSkeletonGameOver();

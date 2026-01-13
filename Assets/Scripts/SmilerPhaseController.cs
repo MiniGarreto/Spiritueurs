@@ -5,42 +5,24 @@ public class SmilerPhaseController : MonoBehaviour, IFlashable
 {
     public enum Phase { Particles = 0, Phase1 = 1, Phase2 = 2, Phase3 = 3 }
 
-    [Header("Assign children (ou laissez OnValidate les trouver automatiquement)")]
     [SerializeField] private GameObject particleSystemRoot;
     [SerializeField] private GameObject phase1Plane;
     [SerializeField] private GameObject phase2Plane;
     [SerializeField] private GameObject phase3Plane;
-
-    [Header("Timing")]
     [SerializeField] private float phaseDuration = 5f;
     [SerializeField] private bool loop = false;
     [SerializeField] private bool startOnAwake = true;
-
     [SerializeField] private Phase startPhase = Phase.Particles;
-
-
-    [Header("Reaction au flash")]
-    [Tooltip("Effet visuel instancié quand flashé (optionnel)")]
     [SerializeField] private GameObject flashDeathVFX; 
-
-    [Header("Audio")]
-    [Tooltip("Optional sound played when the object is destroyed by a flash")]
     [SerializeField] private AudioClip deathSfx;
     [Range(0f, 1f)]
     [SerializeField] private float deathSfxVolume = 1f;
-    [Tooltip("Optional sound played when entering Phase 3")]
     [SerializeField] private AudioClip phase3Sfx;
     [Range(0f, 3f)]
     [SerializeField] private float phase3SfxVolume = 1f;
-
-    [Header("Approach")]
-    [Tooltip("Vitesse à laquelle le smiler se rapproche de la cible")]
     [SerializeField] private float approachSpeed = 2f;
-    [Tooltip("Distance d'arrêt avant d'atteindre la cible")]
     [SerializeField] private float approachStopDistance = 0.5f;
-    [Tooltip("Rotation speed when facing the target during Phase3")]
     [SerializeField] private float rotationSpeed = 5f;
-    [Tooltip("Only rotate on Y axis (no pitch)")]
     [SerializeField] private bool rotateYOnly = true;
     [SerializeField] private Transform approachTarget;
 
@@ -49,7 +31,6 @@ public class SmilerPhaseController : MonoBehaviour, IFlashable
 
     private void Reset()
     {
-        // appelé en éditor si vous choisissez "Reset" dans Inspector — tentative d'assign automatique
         particleSystemRoot = transform.Find("Particle System")?.gameObject;
         phase1Plane = transform.Find("Phase 1")?.gameObject;
         phase2Plane = transform.Find("Phase 2")?.gameObject;
@@ -58,13 +39,11 @@ public class SmilerPhaseController : MonoBehaviour, IFlashable
 
     private void OnValidate()
     {
-        // picks children if left null, utile pour l'édition
         if (particleSystemRoot == null) particleSystemRoot = transform.Find("Particle System")?.gameObject;
         if (phase1Plane == null) phase1Plane = transform.Find("Phase 1")?.gameObject;
         if (phase2Plane == null) phase2Plane = transform.Find("Phase 2")?.gameObject;
         if (phase3Plane == null) phase3Plane = transform.Find("Phase 3")?.gameObject;
 
-        // appliquer état en mode Éditeur pour visualisation
         if (!Application.isPlaying)
         {
             ApplyPhaseState(startPhase);
@@ -121,7 +100,6 @@ public class SmilerPhaseController : MonoBehaviour, IFlashable
 
     private void ApplyPhaseState(Phase p)
     {
-        // Particules : laisser active (changez si vous voulez qu'elles s'éteignent)
         if (particleSystemRoot != null)
             particleSystemRoot.SetActive(true);
 
@@ -134,8 +112,6 @@ public class SmilerPhaseController : MonoBehaviour, IFlashable
         if (phase3Plane != null)
             phase3Plane.SetActive(p == Phase.Phase3);
     }
-
-    // Méthodes utilitaires publiques
 
     private Transform FindPlayerTransform()
     {
@@ -153,7 +129,6 @@ public class SmilerPhaseController : MonoBehaviour, IFlashable
         Vector3 current = transform.position;
         Vector3 targetPos = approachTarget.position;
 
-        // rotate to face the target
         Vector3 lookDir = targetPos - current;
         if (rotateYOnly) lookDir.y = 0f;
         if (lookDir.sqrMagnitude > 0.0001f)
@@ -162,7 +137,7 @@ public class SmilerPhaseController : MonoBehaviour, IFlashable
             transform.rotation = Quaternion.Slerp(transform.rotation, desiredRot, rotationSpeed * Time.deltaTime);
         }
 
-        Vector3 desired = targetPos; // follow full 3D position (including Y)
+        Vector3 desired = targetPos;
         float dist = Vector3.Distance(current, desired);
         if (dist > approachStopDistance)
         {
@@ -174,7 +149,6 @@ public class SmilerPhaseController : MonoBehaviour, IFlashable
         }
     }
 
-    // IFlashable implementation
     public void OnFlashed()
     {
         if (flashDeathVFX != null)

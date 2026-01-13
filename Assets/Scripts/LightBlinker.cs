@@ -2,15 +2,13 @@ using UnityEngine;
 
 public class LightBlinker : MonoBehaviour
 {
-    [Header("Références")]
-    public Light myLight;               // La lumière à contrôler
-    public Renderer targetRenderer;     // L’objet dont le matériau va changer
-    public Material materialOn;         // Matériau quand la lumière est allumée
-    public Material materialOff;        // Matériau quand la lumière est éteinte
+    public Light myLight;              
+    public Renderer targetRenderer;     
+    public Material materialOn;         
+    public Material materialOff;       
 
-    [Header("Paramètres")]
-    public float interval = 10f;        // Intervalle entre les "extinctions"
-    public float offDuration = 2f;      // Durée pendant laquelle la lumière est éteinte
+    public float interval = 10f;
+    public float offDuration = 2f; 
 
     private float timer = 0f;
     private bool isLightOn = true;
@@ -26,7 +24,6 @@ public class LightBlinker : MonoBehaviour
         if (materialOn == null || materialOff == null)
             Debug.LogWarning($"{name}: 'materialOn' ou 'materialOff' n'est pas assigné.");
 
-        // S'assurer que la lumière commence allumée
         SetLight(true);
     }
 
@@ -34,13 +31,11 @@ public class LightBlinker : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-        // Si on atteint l'intervalle, éteindre la lumière
         if (isLightOn && timer >= interval)
         {
             SetLight(false);
             timer = 0f;
         }
-        // Si la lumière est éteinte et qu'on a atteint la durée d'extinction
         else if (!isLightOn && timer >= offDuration)
         {
             SetLight(true);
@@ -70,8 +65,7 @@ public class LightBlinker : MonoBehaviour
             return;
         }
 
-        // Supporter les objets avec plusieurs matériaux : remplacer tous les slots
-        var mats = targetRenderer.materials; // this returns a copy
+        var mats = targetRenderer.materials; 
         if (mats != null && mats.Length > 0)
         {
             for (int i = 0; i < mats.Length; i++)
@@ -81,7 +75,6 @@ public class LightBlinker : MonoBehaviour
         }
         else
         {
-            // Fallback
             targetRenderer.material = chosen;
             Debug.Log($"{name}: matériau défini sur {(state ? "On" : "Off")} (single material). ");
         }
