@@ -17,11 +17,17 @@ public class SkeletonSpawnManager : MonoBehaviour
     public Transform waterTransform;          // L'eau qui monte
     public float disableAtWaterYScale = 1f;   // Désactiver le spawn quand l'eau dépasse ce scale Y
 
+    [Header("Son de spawn")]
+    public AudioSource skeletonSpawnSound;    // AudioSource pour le son de spawn
+
+    [Header("Son des entrées (porte/fenêtre/vent)")]
+    public AudioSource doorAudioSource;       // AudioSource global pour les sons des entrées
+
     private List<AutoDoor> spawnPoints = new List<AutoDoor>();
-    private List<AutoDoor> activeSpawnPoints = new List<AutoDoor>();  // Plusieurs points actifs possibles
+    private List<AutoDoor> activeSpawnPoints = new List<AutoDoor>();  // Portes en train de s'ouvrir
     private AutoDoor lastUsedSpawnPoint;
-    private List<GameObject> activeSkeletons = new List<GameObject>();  // Plusieurs squelettes possibles
-    private bool isWaitingToChooseSpawn = false;
+    private List<GameObject> activeSkeletons = new List<GameObject>();  // Squelettes actifs
+    private int pendingSpawnCoroutines = 0;  // Nombre de coroutines de spawn en attente
     private bool spawnDisabledByWater = false;
 
     void Awake()
@@ -73,7 +79,7 @@ public class SkeletonSpawnManager : MonoBehaviour
                 spawnDisabledByWater = false;
                 
                 // Relancer le cycle de spawn si on peut encore spawner
-                if (!isWaitingToChooseSpawn && CanSpawnMore())
+                if (CanSpawnMore())
                 {
                     StartCoroutine(ChooseAndActivateSpawnPoint());
                 }
@@ -82,9 +88,11 @@ public class SkeletonSpawnManager : MonoBehaviour
     }
 
     // Vérifie si on peut spawner plus de squelettes
+    // Prend en compte: squelettes actifs + portes en train de s'ouvrir + spawns en attente
     private bool CanSpawnMore()
     {
-        return activeSkeletons.Count < maxSimultaneousSkeletons;
+        int totalPendingOrActive = activeSkeletons.Count + activeSpawnPoints.Count + pendingSpawnCoroutines;
+        return totalPendingOrActive < maxSimultaneousSkeletons;
     }
 
     // Vérifie si un spawn point a un squelette actif
@@ -99,6 +107,15 @@ public class SkeletonSpawnManager : MonoBehaviour
     public bool IsSpawnDisabled()
     {
         return spawnDisabledByWater;
+    }
+
+    // Joue un son de porte/fenêtre/vent via l'AudioSource global
+    public void PlayDoorSound(AudioClip clip)
+    {
+        if (doorAudioSource != null && clip != null)
+        {
+            doorAudioSource.PlayOneShot(clip);
+        }
     }
 
     // Appelé par chaque AutoDoor pour s'enregistrer
@@ -129,28 +146,54 @@ public class SkeletonSpawnManager : MonoBehaviour
         return activeSkeletons.Count > 0;
     }
 
+    // Vérifie si on peut spawner plus de squelettes (utilisé par AutoDoor)
+    // Note: Cette porte est déjà dans activeSpawnPoints, donc on vérifie juste les squelettes actifs
+    public bool CanSpawnMoreSkeletons()
+    {
+        return activeSkeletons.Count < maxSimultaneousSkeletons;
+    }
+
     // Appelé quand un squelette est spawné
-    public void OnSkeletonSpawned(GameObject skeleton)
+    public void OnSkeletonSpawned(GameObject skeleton, AutoDoor spawnDoor = null)
     {
         if (!activeSkeletons.Contains(skeleton))
         {
             activeSkeletons.Add(skeleton);
         }
+
+        // Retirer la porte de la liste des points actifs (elle a fait son travail)
+        if (spawnDoor != null)
+        {
+            activeSpawnPoints.Remove(spawnDoor);
+        }
+
+        // Jouer le son de spawn
+        if (skeletonSpawnSound != null)
+        {
+            skeletonSpawnSound.Play();
+        }
         
-        // Si on peut encore spawner plus, lancer un nouveau cycle
-        if (CanSpawnMore() && !isWaitingToChooseSpawn && !spawnDisabledByWater)
+        // Si on peut encore spawner plus, lancer un nouveau cycle de spawn
+        if (CanSpawnMore() && !spawnDisabledByWater)
         {
             StartCoroutine(ChooseAndActivateSpawnPoint());
         }
     }
 
     // Appelé quand un squelette meurt
-    public void OnSkeletonDied()
+    public void OnSkeletonDied(GameObject skeleton = null)
     {
-        // La liste sera nettoyée dans Update() car on ne sait pas quel squelette est mort
+        // Retirer le squelette de la liste
+        if (skeleton != null)
+        {
+            activeSkeletons.Remove(skeleton);
+        }
         
-        // Choisir un nouveau point de spawn si on peut
-        if (!isWaitingToChooseSpawn && !spawnDisabledByWater && CanSpawnMore())
+        // Nettoyer aussi les entrées null au cas où
+        activeSkeletons.RemoveAll(s => s == null);
+        
+        // Choisir un nouveau point de spawn si on peut (toujours lancer un nouveau cycle)
+        if (!spawnDisabledByWater && CanSpawnMore())
         {
             StartCoroutine(ChooseAndActivateSpawnPoint());
         }
@@ -164,8 +207,8 @@ public class SkeletonSpawnManager : MonoBehaviour
         {
             activeSpawnPoints.Remove(closedDoor);
             
-            // Choisir un nouveau point de spawn si on peut
-            if (!isWaitingToChooseSpawn && !spawnDisabledByWater && CanSpawnMore())
+            // Choisir un nouveau point de spawn si on peut (toujours lancer un nouveau cycle)
+            if (!spawnDisabledByWater && CanSpawnMore())
             {
                 StartCoroutine(ChooseAndActivateSpawnPoint());
             }
@@ -174,16 +217,24 @@ public class SkeletonSpawnManager : MonoBehaviour
 
     private IEnumerator ChooseAndActivateSpawnPoint()
     {
-        isWaitingToChooseSpawn = true;
+        pendingSpawnCoroutines++;
 
         // Attendre un délai aléatoire
         float delay = Random.Range(minDelayBetweenSpawns, maxDelayBetweenSpawns);
         yield return new WaitForSeconds(delay);
 
-        // Ne pas spawner si désactivé par l'eau ou si on a atteint le max
-        if (spawnDisabledByWater || !CanSpawnMore())
+        pendingSpawnCoroutines--;
+
+        // Ne pas spawner si désactivé par l'eau
+        if (spawnDisabledByWater)
         {
-            isWaitingToChooseSpawn = false;
+            yield break;
+        }
+
+        // Vérifier si on peut encore spawner (compter les squelettes actifs + portes ouvertes + spawns en attente)
+        int totalPendingSkeletons = activeSkeletons.Count + activeSpawnPoints.Count;
+        if (totalPendingSkeletons >= maxSimultaneousSkeletons)
+        {
             yield break;
         }
 
@@ -198,8 +249,6 @@ public class SkeletonSpawnManager : MonoBehaviour
             // Activer l'ouverture de ce point de spawn
             chosenSpawnPoint.StartOpening();
         }
-
-        isWaitingToChooseSpawn = false;
     }
 
     private AutoDoor ChooseRandomSpawnPoint()

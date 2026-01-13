@@ -26,13 +26,9 @@ public class AutoDoor : MonoBehaviour
     public float angleJitter = 10f;
     public float speedJitter = 3f;
 
-    [Header("Son d'ouverture")]
-    public AudioClip openingSound;      // Son joué pendant l'ouverture (différent pour chaque entrée)
-    [Range(0f, 10f)]
-    public float soundVolume = 1f;
-    public bool loopSound = true;       // Le son boucle pendant toute l'ouverture
-
-    private AudioSource audioSource;
+    [Header("Sons d'entrée")]
+    public AudioClip openingSound;      // Son joué pendant l'ouverture
+    public AudioClip closingSound;      // Son joué à la fermeture
 
     [Header("Squelette")]
     public GameObject skeletonPrefab;
@@ -59,17 +55,6 @@ public class AutoDoor : MonoBehaviour
         {
             SkeletonSpawnManager.Instance.RegisterSpawnPoint(this);
         }
-
-        // Configurer l'AudioSource
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
-        }
-        audioSource.playOnAwake = false;
-        audioSource.spatialBlend = 1f; // Son 3D
-        audioSource.loop = loopSound;
-        audioSource.volume = soundVolume;
 
         // Utiliser espace monde si forcé OU si un parent a une scale non-uniforme
         utiliserEspaceMonde = forcerEspaceMonde;
@@ -110,13 +95,14 @@ public class AutoDoor : MonoBehaviour
             SkeletonAI skeletonAI = currentSkeleton.GetComponent<SkeletonAI>();
             if(skeletonAI == null || !skeletonAI.IsAlive)
             {
+                GameObject deadSkeleton = currentSkeleton;
                 currentSkeleton = null;
                 hasSpawnedSkeleton = false;
                 
-                // Notifier le manager que le squelette est mort
+                // Notifier le manager que le squelette est mort (passer la référence pour le retirer de la liste)
                 if (SkeletonSpawnManager.Instance != null)
                 {
-                    SkeletonSpawnManager.Instance.OnSkeletonDied();
+                    SkeletonSpawnManager.Instance.OnSkeletonDied(deadSkeleton);
                 }
             }
         }
@@ -131,13 +117,12 @@ public class AutoDoor : MonoBehaviour
             if(currentAngle >= targetAngle)
             {
                 opening = false;
-                StopOpeningSound();
 
-                // Spawn le squelette si c'est le point actif et aucun squelette n'existe
+                // Spawn le squelette si c'est le point actif et qu'on peut encore spawner
                 if(!hasSpawnedSkeleton && skeletonPrefab != null && 
                    SkeletonSpawnManager.Instance != null && 
                    SkeletonSpawnManager.Instance.IsActiveSpawnPoint(this) &&
-                   !SkeletonSpawnManager.Instance.HasActiveSkeleton())
+                   SkeletonSpawnManager.Instance.CanSpawnMoreSkeletons())
                 {
                     SpawnSkeleton();
                     StartCoroutine(CloseAfterSkeletonEnters());
@@ -182,10 +167,10 @@ public class AutoDoor : MonoBehaviour
             
             hasSpawnedSkeleton = true;
             
-            // Notifier le manager
+            // Notifier le manager (passer aussi la référence de cette porte)
             if (SkeletonSpawnManager.Instance != null)
             {
-                SkeletonSpawnManager.Instance.OnSkeletonSpawned(currentSkeleton);
+                SkeletonSpawnManager.Instance.OnSkeletonSpawned(currentSkeleton, this);
             }
         }
     }
@@ -217,8 +202,8 @@ public class AutoDoor : MonoBehaviour
         closing = true;
         currentSpeed = fastCloseSpeed;
 
-        // Arrêter le son d'ouverture
-        StopOpeningSound();
+        // Jouer le son de fermeture via le manager
+        PlayClosingSound();
         
         // Si la porte était en train de s'ouvrir et qu'aucun squelette n'a été spawné,
         // notifier le manager pour choisir un nouveau point de spawn
@@ -230,18 +215,17 @@ public class AutoDoor : MonoBehaviour
 
     private void PlayOpeningSound()
     {
-        if (audioSource != null && openingSound != null)
+        if (SkeletonSpawnManager.Instance != null && openingSound != null)
         {
-            audioSource.clip = openingSound;
-            audioSource.Play();
+            SkeletonSpawnManager.Instance.PlayDoorSound(openingSound);
         }
     }
 
-    private void StopOpeningSound()
+    private void PlayClosingSound()
     {
-        if (audioSource != null && audioSource.isPlaying)
+        if (SkeletonSpawnManager.Instance != null && closingSound != null)
         {
-            audioSource.Stop();
+            SkeletonSpawnManager.Instance.PlayDoorSound(closingSound);
         }
     }
 
@@ -252,5 +236,8 @@ public class AutoDoor : MonoBehaviour
         closing = true;
         opening = false;
         currentSpeed = fastCloseSpeed;
+        
+        // Jouer le son de fermeture
+        PlayClosingSound();
     }
 }
